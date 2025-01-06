@@ -1,3 +1,107 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ปรับแต่งให้มีผลเฉพาะหน้า Employee */
+.employee-page {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    display: flex;
+    flex-direction: column; /* วางเนื้อหาในแนวตั้ง */
+    align-items: center;
+    padding: 20px;
+}
+
+.search-form {
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 20px; /* ระยะห่างระหว่างฟอร์มกับตาราง */
+}
+
+.search-fields {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px; /* ระยะห่างระหว่างช่องค้นหา */
+}
+
+.search-fields input,
+.search-fields select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    flex: 1; /* ขยายเต็มพื้นที่ใน flex container */
+}
+
+.search-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}
+
+.table-container {
+    width: 100%;
+    max-width: 800px;
+    overflow-x: auto; /* รองรับหน้าจอเล็ก */
+    background-color: white; /* เพิ่มพื้นหลังสีขาว */
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.employee-page table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.employee-page th,
+.employee-page td {
+    border: 1px solid #ddd;
+    padding: 12px 15px;
+    text-align: center;
+}
+
+.employee-page th {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.employee-page tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.employee-page tr:hover {
+    background-color: #f1f1f1;
+}
+
+@media screen and (max-width: 768px) {
+    .search-fields {
+        flex-direction: column; /* วางช่องค้นหาในแนวตั้ง */
+    }
+
+    .table-container {
+        padding: 15px;
+        width: 100%;
+    }
+
+    .employee-page table {
+        font-size: 14px;
+    }
+
+    .employee-page th,
+    .employee-page td {
+        padding: 8px;
+    }
+}
+.role-search-select {
+    width: 200px; /* Adjust the width as needed */
+}
+

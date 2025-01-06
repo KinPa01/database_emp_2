@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use Inertia\Response;
+
 
 class EmployeeController extends Controller
 {
@@ -16,16 +15,60 @@ class EmployeeController extends Controller
      */
     public function index(Request $request)
     {
-        $query = $request->input('search'); // หาข้อความได้ทั้งชื่อหรือนามสกุล
-        $employees = DB::table("employees")
-            ->where('first_name', 'like', '%' . $query . '%')
-            ->orWhere('last_name','like', '%' . $query . '%')
-            ->paginate(10);
+        $firstName = $request->input('first_name');
+        $lastName = $request->input('last_name');
+        $gender = $request->input('gender');
+        $department = $request->input('department'); // เพิ่มการค้นหาแผนก
+        $role = $request->input('role'); // เพิ่มการค้นหางาน
 
+        $employees = DB::table("employees")
+            ->leftJoin('dept_emp', 'employees.emp_no', '=', 'dept_emp.emp_no')
+            ->leftJoin('departments', 'dept_emp.dept_no', '=', 'departments.dept_no')
+            ->leftJoin('dept_manager', function ($join) {
+                $join->on('employees.emp_no', '=', 'dept_manager.emp_no')
+                    ->on('dept_emp.dept_no', '=', 'dept_manager.dept_no');
+            })
+            ->where(function ($queryBuilder) use ($firstName, $lastName, $gender, $department, $role) {
+                if ($firstName) {
+                    $queryBuilder->where('employees.first_name', 'like', '%' . $firstName . '%');
+                }
+                if ($lastName) {
+                    $queryBuilder->where('employees.last_name', 'like', '%' . $lastName . '%');
+                }
+                if ($gender) {
+                    $queryBuilder->where('employees.gender', '=', $gender);
+                }
+                if ($department) {
+                    $queryBuilder->where('departments.dept_name', 'like', '%' . $department . '%');
+                }
+                if ($role) {
+                    $queryBuilder->where(DB::raw('CASE WHEN dept_manager.emp_no IS NOT NULL THEN "Manager" ELSE "Employee" END'), 'like', '%' . $role . '%');
+                }
+            });
+
+        if ($role === 'Manager') {
+            $employees->whereNotNull('dept_manager.emp_no');
+        } elseif ($role === 'Employee') {
+            $employees->whereNull('dept_manager.emp_no');
+        }
+
+        $employees = $employees->select(
+            'employees.emp_no',
+            'employees.first_name',
+            'employees.last_name',
+            'employees.gender',
+            'employees.birth_date',
+            'departments.dept_name',
+            DB::raw('CASE WHEN dept_manager.emp_no IS NOT NULL THEN "Manager" ELSE "Employee" END AS position')
+        )->paginate(10);
 
         return Inertia::render('Employee/Index', [
             'employees' => $employees,
-            'query' => $query,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'gender' => $gender,
+            'role' => $role,
+            'department' => $department, // ส่งค่าค้นหาแผนก
         ]);
     }
 
