@@ -15,7 +15,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/employee', [EmployeeController::class, 'index'])->name('employee.index');
+Route::get('/employee', [EmployeeController::class, 'index'])->middleware(['auth', 'verified'])->name('employee.index');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
