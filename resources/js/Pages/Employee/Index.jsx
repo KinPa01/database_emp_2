@@ -1,26 +1,63 @@
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import "../../../css/app.css";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
-export default function Index({ employees, query, first_name, last_name, gender, role, department }) {
-    const [search, setSearch] = useState(query || '');
+export default function Index({ employees, search, gender, role, department }) {
+    const [searchInput, setSearchInput] = useState(search || '');
     const [genderSearch, setGenderSearch] = useState(gender || '');
-    const [firstNameSearch, setFirstNameSearch] = useState(first_name || '');
-    const [lastNameSearch, setLastNameSearch] = useState(last_name || '');
-    const [departmentSearch, setDepartmentSearch] = useState(department || ''); // state for department
+    const [departmentSearch, setDepartmentSearch] = useState(department || '');
     const [roleSearch, setRoleSearch] = useState(role || '');
+
+    const { links, current_page, last_page } = employees;
 
     const handleSearch = (e) => {
         e.preventDefault();
         router.get('/employee', {
-            search,
+            search: searchInput,
             gender: genderSearch,
-            first_name: firstNameSearch,
-            last_name: lastNameSearch,
-            department: departmentSearch, // sending department
+            department: departmentSearch,
             role: roleSearch,
         });
+    };
+
+    const handlePageChange = (url) => {
+        if (url) {
+            const params = new URLSearchParams({
+                search: searchInput,
+                gender: genderSearch,
+                department: departmentSearch,
+                role: roleSearch,
+            }).toString();
+
+            router.get(`${url}&${params}`);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (current_page < last_page) {
+            const params = new URLSearchParams({
+                search: searchInput,
+                gender: genderSearch,
+                department: departmentSearch,
+                role: roleSearch,
+            }).toString();
+
+            handlePageChange(`/employee?page=${current_page + 1}&${params}`);
+        }
+    };
+
+    const handlePreviousPage = () => {
+        if (current_page > 1) {
+            const params = new URLSearchParams({
+                search: searchInput,
+                gender: genderSearch,
+                department: departmentSearch,
+                role: roleSearch,
+            }).toString();
+
+            handlePageChange(`/employee?page=${current_page - 1}&${params}`);
+        }
     };
 
     return (
@@ -36,16 +73,9 @@ export default function Index({ employees, query, first_name, last_name, gender,
                     <div className="search-fields">
                         <input
                             type="text"
-                            placeholder="Search by First Name"
-                            value={firstNameSearch}
-                            onChange={(e) => setFirstNameSearch(e.target.value)}
-                            className="search-input"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Search by Last Name"
-                            value={lastNameSearch}
-                            onChange={(e) => setLastNameSearch(e.target.value)}
+                            placeholder="Search by ID, Name, Department, etc."
+                            value={searchInput}
+                            onChange={(e) => setSearchInput(e.target.value)}
                             className="search-input"
                         />
                         <select
@@ -53,40 +83,11 @@ export default function Index({ employees, query, first_name, last_name, gender,
                             onChange={(e) => setGenderSearch(e.target.value)}
                             className="search-select"
                         >
-                            <option value="">All</option>
+                            <option value="">Select gender</option>
                             <option value="M">Male</option>
                             <option value="F">Female</option>
                         </select>
-
-                        {/* Department select dropdown */}
-                        <select
-                            value={departmentSearch}
-                            onChange={(e) => setDepartmentSearch(e.target.value)}
-                            className="search-select"
-                        >
-                            <option value="">All Departments</option>
-                            <option value="Customer Service">Customer Service</option>
-                            <option value="Development">Development</option>
-                            <option value="Finance">Finance</option>
-                            <option value="Human Resources">Human Resources</option>
-                            <option value="Marketing">Marketing</option>
-                            <option value="Production">Production</option>
-                            <option value="Quality Management">Quality Management</option>
-                            <option value="Research">Research</option>
-                            <option value="Sales">Sales</option>
-                        </select>
-
-                        <select
-                            value={roleSearch}
-                            onChange={(e) => setRoleSearch(e.target.value)}
-                            className="search-select"
-                        >
-                            <option value="">All Roles</option>
-                            <option value="Manager">Manager</option>
-                            <option value="Employee">Employee</option>
-                        </select>
-
-                        <button type="submit" className="search-button">Search</button>
+                        <button type="submit" className="search-button decorated-button">Search</button>
                     </div>
                 </form>
 
@@ -94,33 +95,65 @@ export default function Index({ employees, query, first_name, last_name, gender,
                     <table>
                         <thead>
                             <tr>
+                                <th>Photo</th>
                                 <th>ID</th>
                                 <th>First Name</th>
                                 <th>Last Name</th>
-                                <th>Gender</th>
                                 <th>Department</th>
-                                <th>Role</th>
+                                <th>Birthday</th>
+                                <th>Gender</th>
                             </tr>
                         </thead>
                         <tbody>
                             {employees.data.length > 0 ? (
                                 employees.data.map((employee, index) => (
                                     <tr key={index}>
+                                        <td>
+                                            {employee.photo ? (
+                                                <img
+                                                    src={`/storage/${employee.photo}`} // Correct path to the photo
+                                                    alt="Employee Photo"
+                                                    className="employee-photo"
+                                                    style={{ width: '86px', height: '86px', objectFit: 'cover' }}
+                                                />
+                                            ) : (
+                                                <span>No photo</span> // Default text when no photo is available
+                                            )}
+                                        </td>
                                         <td>{employee.emp_no}</td>
                                         <td>{employee.first_name}</td>
                                         <td>{employee.last_name}</td>
-                                        <td>{employee.gender === "M" ? "Male" : "Female"}</td>
                                         <td>{employee.dept_name}</td>
-                                        <td>{employee.position}</td>
+                                        <td>{employee.birth_date}</td>
+                                        <td>{employee.gender}</td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="6">No employees found</td>
+                                    <td colSpan="7">No employees found</td>
                                 </tr>
                             )}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Pagination Controls */}
+                <div className="pagination-controls">
+                    <button
+                        className="pagination-button"
+                        onClick={handlePreviousPage}
+                        disabled={current_page <= 1}
+                    >
+                        Back
+                    </button>
+                    <span className='page-number'>Page {current_page} of {last_page}</span>
+                    <button
+                        className="pagination-button"
+                        onClick={handleNextPage}
+                        disabled={current_page >= last_page}
+                    >
+                        Next
+                    </button>
                 </div>
             </div>
         </AuthenticatedLayout>

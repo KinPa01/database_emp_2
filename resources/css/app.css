@@ -7,7 +7,7 @@
     font-family: Arial, sans-serif;
     background-color: #f0f2f5;
     display: flex;
-    flex-direction: column; /* วางเนื้อหาในแนวตั้ง */
+    flex-direction: column;
     align-items: center;
     padding: 20px;
 }
@@ -15,21 +15,20 @@
 .search-form {
     width: 100%;
     max-width: 800px;
-    margin-bottom: 20px; /* ระยะห่างระหว่างฟอร์มกับตาราง */
+    margin-bottom: 20px;
 }
 
 .search-fields {
     display: flex;
     gap: 10px;
-    margin-bottom: 10px; /* ระยะห่างระหว่างช่องค้นหา */
+    margin-bottom: 10px;
 }
 
-.search-fields input,
-.search-fields select {
+.search-fields input {
     padding: 8px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    flex: 1; /* ขยายเต็มพื้นที่ใน flex container */
+    flex: 1;
 }
 
 .search-button {
@@ -39,6 +38,8 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .search-button:hover {
@@ -47,9 +48,9 @@
 
 .table-container {
     width: 100%;
-    max-width: 800px;
-    overflow-x: auto; /* รองรับหน้าจอเล็ก */
-    background-color: white; /* เพิ่มพื้นหลังสีขาว */
+    max-width: 850px;
+    overflow-x: auto;
+    background-color: white;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
@@ -61,8 +62,7 @@
     margin-top: 10px;
 }
 
-.employee-page th,
-.employee-page td {
+.employee-page th, .employee-page td {
     border: 1px solid #ddd;
     padding: 12px 15px;
     text-align: center;
@@ -82,26 +82,39 @@
     background-color: #f1f1f1;
 }
 
-@media screen and (max-width: 768px) {
-    .search-fields {
-        flex-direction: column; /* วางช่องค้นหาในแนวตั้ง */
-    }
-
-    .table-container {
-        padding: 15px;
-        width: 100%;
-    }
-
-    .employee-page table {
-        font-size: 14px;
-    }
-
-    .employee-page th,
-    .employee-page td {
-        padding: 8px;
-    }
-}
-.role-search-select {
-    width: 200px; /* Adjust the width as needed */
+.pagination-controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 800px;
+    margin-top: 10px;
 }
 
+.pagination-button {
+    padding: 10px 20px;
+    border: 1px solid #007bff;
+    background-color: white;
+    color: #007bff;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.pagination-button:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.pagination-button:disabled {
+    background-color: #e0e0e0;
+    color: #a0a0a0;
+    cursor: not-allowed;
+}
+
+.page-number {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #ffffff;
+    border-radius: 4px;
+    font-weight: bold;
+    text-align: center;
+}
