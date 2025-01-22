@@ -118,3 +118,40 @@
     font-weight: bold;
     text-align: center;
 }
+
+    .popup {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 15px 30px;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+        max-width: 90%;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+    }
+
+    .popup-warning {
+        background-color: #e53e3e; /* สีพื้นหลังแดง */
+    }
+
+    .popup-success {
+        background-color: #38a169; /* สีพื้นหลังเขียว */
+    }
+
+    /* Animations */
+    .popup {
+        animation: fadeIn 0.5s forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
