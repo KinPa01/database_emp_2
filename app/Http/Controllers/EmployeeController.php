@@ -27,10 +27,13 @@ class EmployeeController extends Controller
                 ->where(function ($q) use ($query, $gender) {
                     // Search conditions
                     if ($query) {
-                        $q->where('employees.emp_no', 'like', '%' . $query . '%')
-                            ->orWhere('employees.first_name', 'like', '%' . $query . '%')
-                            ->orWhere('employees.last_name', 'like', '%' . $query . '%')
-                            ->orWhere('departments.dept_name', 'like', '%' . $query . '%');
+                        $q->where(function ($subQuery) use ($query) {
+                            $subQuery->where('employees.emp_no', 'like', '%' . $query . '%')
+                                ->orWhere('employees.first_name', 'like', '%' . $query . '%')
+                                ->orWhere('employees.last_name', 'like', '%' . $query . '%')
+                                ->orWhere('departments.dept_name', 'like', '%' . $query . '%')
+                                ->orWhere('employees.birth_date', 'like', '%' . $query . '%');
+                        });
                     }
 
                     // Gender filter

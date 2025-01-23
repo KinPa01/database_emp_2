@@ -8,6 +8,7 @@ export default function Index({ employees, search, gender, role, department }) {
     const [genderSearch, setGenderSearch] = useState(gender || '');
     const [departmentSearch, setDepartmentSearch] = useState(department || '');
     const [roleSearch, setRoleSearch] = useState(role || '');
+    const [selectedPhoto, setSelectedPhoto] = useState(null);
 
     const { links, current_page, last_page } = employees;
 
@@ -73,7 +74,7 @@ export default function Index({ employees, search, gender, role, department }) {
                     <div className="search-fields">
                         <input
                             type="text"
-                            placeholder="Search by ID, Name, Department, etc."
+                            placeholder="Search by ID, First Name, Last Name, Department, Birthday"
                             value={searchInput}
                             onChange={(e) => setSearchInput(e.target.value)}
                             className="search-input"
@@ -115,6 +116,7 @@ export default function Index({ employees, search, gender, role, department }) {
                                                     alt="Employee Photo"
                                                     className="employee-photo"
                                                     style={{ width: '86px', height: '86px', objectFit: 'cover' }}
+                                                    onClick={() => setSelectedPhoto(employee.photo)} // เมื่อคลิก ให้ตั้งค่ารูป
                                                 />
                                             ) : (
                                                 <span>No photo</span> // Default text when no photo is available
@@ -156,6 +158,24 @@ export default function Index({ employees, search, gender, role, department }) {
                     </button>
                 </div>
             </div>
+            {/* Modal สำหรับแสดงภาพขยาย */}
+            {selectedPhoto && (
+                <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50">
+                    <div className="relative">
+                        <img
+                            src={`/storage/${selectedPhoto}`}
+                            alt="Employee"
+                            className="max-w-full max-h-screen object-contain rounded-lg"
+                        />
+                        <button
+                            onClick={() => setSelectedPhoto(null)}
+                            className="absolute top-2 left-2 bg-red-500 text-white px-4 py-2 rounded-full"
+                        >
+                            close
+                        </button>
+                    </div>
+                </div>
+            )}
         </AuthenticatedLayout>
     );
 }
